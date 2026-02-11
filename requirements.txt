@@ -1,0 +1,6 @@
+tensorflow
+tensorflow-model-optimization
+codecarbon
+requests
+pandas
+numpy
