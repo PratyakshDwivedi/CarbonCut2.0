@@ -1,14 +1,29 @@
-
 from green_lib.scheduler import GridScheduler
 from green_lib.governor import EROIGovernor
 from green_lib.pruner import apply_pruning_and_save
-import tensorflow as tf
-mnist = tf.keras.datasets.mnist
-((x_train, y_train), (x_test, y_test)) = mnist.load_data()
-(x_train, x_test) = ((x_train / 255.0), (x_test / 255.0))
-model = tf.keras.models.Sequential([tf.keras.layers.Flatten(input_shape=(28, 28)), tf.keras.layers.Dense(512, activation='relu'), tf.keras.layers.Dropout(0.2), tf.keras.layers.Dense(10)])
-loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-model.compile(optimizer='adam', loss=loss_fn, metrics=['accuracy'])
-GridScheduler().wait_for_green_window()
-model.fit(x_train, y_train, epochs=5, callbacks=[EROIGovernor()])
+
+# Simple ML model: Predict exam score from study hours
+
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# Training data (hours studied)
+X = np.array([[1], [2], [3], [4], [5]])
+
+# Corresponding exam scores
+y = np.array([40, 50, 60, 70, 80])
+
+# Create model
+model = LinearRegression()
+
+# Train model
+GridScheduler(threshold=250).wait_for_green_window()
+model.fit(callbacks=[EROIGovernor()], X, y)
+
+# Predict score for a student studying 6 hours
+prediction = model.predict([[6]])
+
+print("Predicted Score:", prediction[0])
+
+# Phase 3: Pruning
 apply_pruning_and_save(model, filepath='my_heavy_model.h5')

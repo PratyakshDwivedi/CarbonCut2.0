@@ -1,0 +1,5 @@
+carboncut.db
+old_emissions.csv
+green_emissions.csv
+__pycache__/
+.env
